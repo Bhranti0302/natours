@@ -1,14 +1,12 @@
 /* eslint-disable */
-import axios from 'https://cdn.jsdelivr.net/npm/axios@1.4.0/dist/esm/axios.min.js';
+import axios from 'axios';
+
 import { showAlert } from './alert.js';
 
 // Update user data or password
 export const updateSettings = async (data, type) => {
   try {
-    const url =
-      type === 'password'
-        ? 'http://localhost:3000/api/v1/users/updateMyPassword'
-        : 'http://localhost:3000/api/v1/users/updateMe';
+    const url = type === 'password' ? '/api/v1/users/updateMyPassword' : '/api/v1/users/updateMe';
 
     const res = await axios({
       method: 'PATCH',
@@ -45,7 +43,7 @@ if (userDataForm) {
     if (photoInput.files.length > 0) {
       form.append('photo', photoInput.files[0]);
     }
-    console.log(form);
+    // console.log(form);
 
     // Call your API update function
     updateSettings(form, 'data');

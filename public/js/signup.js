@@ -1,5 +1,6 @@
 /* eslint-disable */
-import axios from 'https://cdn.jsdelivr.net/npm/axios@1.4.0/dist/esm/axios.min.js';
+import axios from 'axios';
+
 import { showAlert } from './alert.js';
 
 const signup = async (name, email, password, passwordConfirm, photo) => {
@@ -13,7 +14,7 @@ const signup = async (name, email, password, passwordConfirm, photo) => {
 
     const res = await axios({
       method: 'POST',
-      url: 'http://localhost:3000/api/v1/users/signup',
+      url: '/api/v1/users/signup',
       data: form,
       withCredentials: true,
     });

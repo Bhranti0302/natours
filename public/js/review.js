@@ -1,5 +1,6 @@
 // public/js/review.js
-import axios from 'https://cdn.jsdelivr.net/npm/axios@1.4.0/dist/esm/axios.min.js';
+import axios from 'axios';
+
 import { showAlert } from './alert.js';
 
 export const createReview = async (tourId, review, rating) => {

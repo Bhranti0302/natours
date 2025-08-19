@@ -31,10 +31,10 @@ const importData = async () => {
     await Tour.create(tours);
     await User.create(users, { validateBeforeSave: false }); // skip password encryption
     await Review.create(reviews);
-    console.log('✅ Data successfully loaded!');
+    // console.log('✅ Data successfully loaded!');
     process.exit();
   } catch (err) {
-    console.error('❌ Error loading data:', err);
+    // console.error('❌ Error loading data:', err);
     process.exit(1);
   }
 };
@@ -45,10 +45,10 @@ const deleteData = async () => {
     await Tour.deleteMany();
     await User.deleteMany();
     await Review.deleteMany();
-    console.log('🗑️ Data successfully deleted!');
+    // console.log('🗑️ Data successfully deleted!');
     process.exit();
   } catch (err) {
-    console.error('❌ Error deleting data:', err);
+    // console.error('❌ Error deleting data:', err);
     process.exit(1);
   }
 };
@@ -59,6 +59,6 @@ if (process.argv[2] === '--import') {
 } else if (process.argv[2] === '--delete') {
   deleteData();
 } else {
-  console.log('⚠️ Please provide a valid argument: --import or --delete');
+  // console.log('⚠️ Please provide a valid argument: --import or --delete');
   process.exit();
 }

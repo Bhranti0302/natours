@@ -93,7 +93,7 @@ exports.getMe = (req, res, next) => {
 // Update logged-in user's own data (name, email, photo)
 // --------------------
 exports.updateMe = catchAsync(async (req, res, next) => {
-  console.log('Uploaded file:', req.file);
+  // console.log('Uploaded file:', req.file);
 
   // 1) Prevent password updates here
   if (req.body.password || req.body.passwordConfirm) {

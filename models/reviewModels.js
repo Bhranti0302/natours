@@ -48,7 +48,7 @@ reviewSchema.pre(/^find/, function (next) {
 
 //  Calculate average ratings
 reviewSchema.statics.calcAverageRatings = async function (tourId) {
-  console.log(tourId);
+  // console.log(tourId);
   const stats = await this.aggregate([
     { $match: { tour: tourId } },
     {
@@ -60,7 +60,7 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
     },
   ]);
 
-  console.log(stats);
+  // console.log(stats);
 
   const Tour = require('./tourModels');
 

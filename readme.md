@@ -30,5 +30,3 @@ Users can explore tours, book them, leave reviews, and manage their account.
 - **Authentication:** JWT (JSON Web Tokens), bcrypt
 - **Payments:** Stripe API
 - **Other Tools:** Multer (file uploads), Nodemailer (emails)
-
----

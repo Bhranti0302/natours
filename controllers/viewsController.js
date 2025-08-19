@@ -178,7 +178,7 @@ exports.getMyBilling = catchAsync(async (req, res, next) => {
   );
 
   // Debug: check what’s coming
-  console.log(bookings);
+  // console.log(bookings);
 
   res.status(200).render('billing', {
     title: 'My Billing',

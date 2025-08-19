@@ -1,6 +1,7 @@
 /* eslint-disable */
 // It’s a JavaScript HTTP client used to make requests to the backend.
-import axios from 'https://cdn.jsdelivr.net/npm/axios@1.4.0/dist/esm/axios.min.js';
+import axios from 'axios';
+
 import { showAlert } from './alert.js';
 
 // =======================
@@ -10,7 +11,7 @@ const login = async (email, password) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: 'http://localhost:3000/api/v1/users/login',
+      url: '/api/v1/users/login',
       data: { email, password },
       withCredentials: true, // Allow cookies
     });
@@ -33,7 +34,7 @@ const logout = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:3000/api/v1/users/logout',
+      url: '/api/v1/users/logout',
       withCredentials: true,
     });
     if (res.data.status === 'success') location.reload(true);

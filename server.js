@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const app = require('./app'); // 3) only now require app
 const Tour = require('./models/tourModels');
 
-console.log('Stripe Secret:', process.env.STRIPE_SECRET_KEY ? '✅ Loaded' : '❌ Missing');
+// console.log('Stripe Secret:', process.env.STRIPE_SECRET_KEY ? '✅ Loaded' : '❌ Missing');
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
