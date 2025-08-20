@@ -88,20 +88,23 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
 // ------------------------------
 // Admin Panels
 // ------------------------------
+
 exports.getAllTours = catchAsync(async (req, res, next) => {
   const tours = await Tour.find();
+
   res.status(200).render('manageTours', {
     title: 'Manage Tours',
-    tours,
+    tours: tours.length ? tours : null, // fallback if empty
     activePage: 'manage-tours',
   });
 });
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
+
   res.status(200).render('manageUsers', {
     title: 'Manage Users',
-    users,
+    users: users.length ? users : null,
     activePage: 'manage-users',
   });
 });
@@ -109,9 +112,9 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
 exports.getAllBookings = catchAsync(async (req, res, next) => {
   const bookings = await Booking.find().populate('user', 'name email').populate('tour', 'name');
 
-  res.status(200).render('manageBookings', {
+  res.status(200).render('manageBooking', {
     title: 'Manage Bookings',
-    bookings,
+    bookings: bookings.length ? bookings : null,
     activePage: 'manage-bookings',
   });
 });
@@ -121,11 +124,10 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
 
   res.status(200).render('manageReviews', {
     title: 'Manage Reviews',
-    reviews,
+    reviews: reviews.length ? reviews : null,
     activePage: 'manage-reviews',
   });
 });
-
 // ------------------------------
 // My Pages
 // ------------------------------
