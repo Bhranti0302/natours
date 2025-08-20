@@ -9,6 +9,8 @@ const catchAsync = require('../utils/catchAsync');
 
 const router = express.Router();
 
+router.use(viewsController.alerts);
+
 // ------------------------------
 // Routes
 // ------------------------------
