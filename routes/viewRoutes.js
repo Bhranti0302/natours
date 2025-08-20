@@ -1,5 +1,5 @@
 const express = require('express');
-const viewsController = require('../controllers/viewsController');
+const viewsController = require('../controllers/viewsController'); // ✅ keep plural
 const authController = require('../controllers/authController');
 const bookingController = require('../controllers/bookingController');
 
@@ -9,24 +9,42 @@ const catchAsync = require('../utils/catchAsync');
 
 const router = express.Router();
 
-router.use(authController.isLoggedIn);
+// ------------------------------
+// Routes
+// ------------------------------
 
+// Homepage (overview)
 router.get(
   '/',
-  bookingController.createBookingCheckout,
-  authController.isLoggedIn,
+  bookingController.createBookingCheckout, // TEMP booking creation
+  authController.isLoggedIn, // navbar login logic
   viewsController.getOverview
 );
 
-router.get('/tour/:slug', viewsController.getTour);
-router.get('/login', viewsController.getLoginForm);
+// Tour details
+router.get('/tour/:slug', authController.isLoggedIn, viewsController.getTour);
+
+// ------------------------------
+// Auth pages
+// ------------------------------
+router.get('/login', authController.isLoggedIn, viewsController.getLoginForm);
 router.get('/signup', viewsController.getSignupForm);
+
+// ------------------------------
+// User account pages
+// ------------------------------
 router.get('/me', authController.protect, viewsController.getAccount);
 router.post('/submit-user-data', authController.protect, viewsController.updateUserData);
+
 router.get('/account/billing', authController.protect, viewsController.getMyBilling);
 router.get('/account/reviews', authController.protect, viewsController.getMyReviews);
 
-router.get('/my-tours', authController.protect, viewsController.getMyTours);
+router.get(
+  '/my-tours',
+  authController.protect,
+  bookingController.createBookingCheckout,
+  viewsController.getMyTours // ✅ fixed name
+);
 
 // ------------------------------
 // Handle review form submission
@@ -35,7 +53,6 @@ router.post(
   '/tour/:tourId/reviews',
   authController.protect,
   catchAsync(async (req, res, next) => {
-    // 1) Create review
     await Review.create({
       review: req.body.review,
       rating: req.body.rating,
@@ -43,10 +60,7 @@ router.post(
       user: req.user.id,
     });
 
-    // 2) Find the tour to get its slug
     const tour = await Tour.findById(req.params.tourId);
-
-    // 3) Redirect back to the tour page
     res.redirect(`/tour/${tour.slug}`);
   })
 );
