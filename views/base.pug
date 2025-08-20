@@ -11,7 +11,7 @@ html(lang="en")
     // Allow child templates to append extra <head> content
     block head
 
-  body(data-alert=`${alert?alert:""}`)
+  body(data-alert=alert)
     include _header
 
     block content
