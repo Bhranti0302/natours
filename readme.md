@@ -7,7 +7,8 @@ Users can explore tours, book them, leave reviews, and manage their account.
 
 ## 🚀 Live Demo
 
-👉 [Click here to view the live demo]([https://natours-website-bhranti-e551ef7db2e6.herokuapp.com/])
+👉 [Click here to view the live demo](https://natours-website-bhranti-e551ef7db2e6.herokuapp.com/)
+
 
 ---
 
