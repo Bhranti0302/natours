@@ -1,0 +1,24 @@
+extends base
+
+block content
+  main.main
+    .login-form
+      h2.heading-secondary.ma-bt-lg Create your account
+      form.form.form--signup(enctype='multipart/form-data' method='POST' action='/api/v1/users/signup')
+        .form__group
+          label.form__label(for='name') Name
+          input#name.form__input(type='text' name='name' placeholder='Your name' required minlength='8' maxlength='40')
+        .form__group
+          label.form__label(for='email') Email address
+          input#email.form__input(type='email' name='email' placeholder='you@example.com' required)
+        .form__group
+          label.form__label(for='photo') Profile Photo
+          input#photo.form__input(type='file' name='photo' accept='image/*')
+        .form__group
+          label.form__label(for='password') Password
+          input#password.form__input(type='password' name='password' placeholder='••••••••' required minlength='8')
+        .form__group
+          label.form__label(for='passwordConfirm') Confirm password
+          input#passwordConfirm.form__input(type='password' name='passwordConfirm' placeholder='••••••••' required minlength='8')
+        .form__group
+          button.btn.btn--green(type='submit') Sign up

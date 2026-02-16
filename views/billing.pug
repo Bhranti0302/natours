@@ -1,0 +1,50 @@
+extends base
+
+//- Sidebar mixin
+mixin navItem(link, text, icon, active)
+  li(class=`${active ? 'side-nav--active' : ''}`)
+    a(href=`${link}`)
+      svg
+        use(xlink:href=`img/icons.svg#icon-${icon}`)
+      | #{text}
+
+block content
+  main.main
+    .user-view
+      // Sidebar
+      nav.user-view__menu
+        ul.side-nav
+          +navItem('/me', 'Settings', 'settings', activePage === 'settings')
+          +navItem('/my-tours', 'My bookings', 'briefcase', activePage === 'bookings')
+          +navItem('/account/reviews', 'My reviews', 'star', activePage === 'reviews')
+          +navItem('/account/billing', 'Billing', 'credit-card', activePage === 'billing')
+
+        - if (user.role === 'admin')
+          .admin-nav
+            h5.admin-nav__heading Admin
+            ul.side-nav
+              +navItem('/admin/manage-tours', 'Manage tours', 'map', activePage === 'manage-tours')
+              +navItem('/admin/manage-users', 'Manage users', 'users', activePage === 'manage-users')
+              +navItem('/admin/manage-reviews', 'Manage reviews', 'star', activePage === 'manage-reviews')
+              +navItem('/admin/manage-bookings', 'Manage bookings', 'briefcase', activePage === 'manage-bookings')
+
+      // Main content: Billing cards
+      .user-view__content
+        h2.heading-secondary.ma-bt-md.admin-heading Your Billing
+
+        if bookings.length
+          .billing-cards
+            each booking in bookings
+              .billing-card.billing
+                .billing-card__header
+                  h3= booking.tour.name
+                  span.billing-card__date= booking.createdAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+                .billing-card__body
+                  p
+                    strong Price: 
+                    |  $#{booking.price}
+                  p
+                    strong Paid: 
+                    |  #{booking.paid ? 'Yes' : 'No'}
+        else
+          p You have no billing records yet.
