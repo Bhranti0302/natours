@@ -34,7 +34,7 @@ app.set('views', path.join(__dirname, 'views'));
 // 🔥 STRIPE WEBHOOK (MUST BE FIRST — NO EXCEPTIONS)
 // ======================================================
 app.post(
-  '/webhook-checkout',
+  '/api/v1/bookings/webhook',
   express.raw({ type: 'application/json' }),
   bookingController.webhookCheckout
 );
