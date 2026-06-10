@@ -1,5 +1,5 @@
 const dotenv = require('dotenv');
-dotenv.config({ path: './config.env' }); // Load env vars first
+dotenv.config({ path: './config.env' }); // For local only
 
 const mongoose = require('mongoose');
 const app = require('./app');
@@ -16,14 +16,10 @@ process.on('uncaughtException', (err) => {
 // -----------------------------
 // Database Connection
 // -----------------------------
-const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
+const DB = process.env.DATABASE;
 
 mongoose
-  .connect(DB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    // useFindAndModify is no longer supported in latest mongoose
-  })
+  .connect(DB)
   .then(() => console.log('✅ DB connection successful'))
   .catch((err) => {
     console.error('❌ DB connection error:', err.message);
@@ -34,6 +30,7 @@ mongoose
 // Start Server
 // -----------------------------
 const port = process.env.PORT || 3000;
+
 const server = app.listen(port, () => {
   console.log(`🚀 App is running on port ${port}...`);
 });
@@ -51,7 +48,7 @@ process.on('unhandledRejection', (err) => {
 });
 
 // -----------------------------
-// Handle SIGTERM (Heroku / Docker)
+// Handle SIGTERM (Render/Cloud)
 // -----------------------------
 process.on('SIGTERM', () => {
   console.log('👋 SIGTERM RECEIVED. Shutting down gracefully');
