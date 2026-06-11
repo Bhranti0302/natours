@@ -89,7 +89,8 @@ exports.logout = (req, res) => {
     secure: process.env.NODE_ENV === 'production',
   });
 
-  res.status(200).json({ status: 'success' });
+  // ✅ Redirect to overview page
+  res.redirect('/');
 };
 
 // -----------------------
