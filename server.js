@@ -26,18 +26,29 @@ console.log('DATABASE exists:', !!DB);
 console.log('DATABASE length:', DB ? DB.length : 0);
 console.log('DATABASE starts:', DB ? DB.substring(0, 30) : 'missing');
 console.log('DATABASE ends:', DB ? DB.substring(DB.length - 20) : 'missing');
-console.log('Contains backslash:', DB.includes('\\'));
-console.log('Contains quote:', DB.includes('"'));
-console.log('Contains space:', DB.includes(' '));
-console.log('Contains newline:', DB.includes('\n'));
+
+console.log('Contains backslash:', DB ? DB.includes('\\') : false);
+
+console.log('Contains quote:', DB ? DB.includes('"') : false);
+
+console.log('Contains space:', DB ? DB.includes(' ') : false);
+
+console.log('Contains newline:', DB ? DB.includes('\n') : false);
 
 if (!DB) {
   console.error('❌ DATABASE environment variable is missing');
   process.exit(1);
 }
 
+// -----------------------------
+// Connect to MongoDB
+// -----------------------------
+
 mongoose
-  .connect(DB)
+  .connect(DB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log('✅ DB connection successful');
 
