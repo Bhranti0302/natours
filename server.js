@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
-dotenv.config({ path: './config.env' }); // For local only
+
+dotenv.config();
 
 const mongoose = require('mongoose');
 const app = require('./app');
@@ -7,6 +8,7 @@ const app = require('./app');
 // -----------------------------
 // Handle uncaught exceptions
 // -----------------------------
+
 process.on('uncaughtException', (err) => {
   console.error('UNCAUGHT EXCEPTION 💥 Shutting down...');
   console.error(err.name, err.message);
@@ -16,6 +18,7 @@ process.on('uncaughtException', (err) => {
 // -----------------------------
 // Database Connection
 // -----------------------------
+
 const DB = process.env.DATABASE;
 
 mongoose
@@ -29,6 +32,7 @@ mongoose
 // -----------------------------
 // Start Server
 // -----------------------------
+
 const port = process.env.PORT || 3000;
 
 const server = app.listen(port, () => {
@@ -38,6 +42,7 @@ const server = app.listen(port, () => {
 // -----------------------------
 // Handle unhandled rejections
 // -----------------------------
+
 process.on('unhandledRejection', (err) => {
   console.error('UNHANDLED REJECTION 💥 Shutting down...');
   console.error(err.name, err.message);
@@ -48,10 +53,12 @@ process.on('unhandledRejection', (err) => {
 });
 
 // -----------------------------
-// Handle SIGTERM (Render/Cloud)
+// Handle SIGTERM
 // -----------------------------
+
 process.on('SIGTERM', () => {
   console.log('👋 SIGTERM RECEIVED. Shutting down gracefully');
+
   server.close(() => {
     console.log('💤 Process terminated!');
   });
