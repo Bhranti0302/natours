@@ -1,16 +1,18 @@
 extends base
 
+//- ==================================================
+//- SIDEBAR NAVIGATION MIXIN
+//- ==================================================
+
 mixin navItem(link, text, icon, active)
   li(class=`${active ? 'side-nav--active' : ''}`)
     a(href=link)
       svg
-        use(xlink:href=`//img/icons.svg#icon-${icon}`)
+        use(xlink:href=`/img/icons.svg#icon-${icon}`)
       | #{text}
 
 block content
-
   main.main
-
     .user-view
 
       //- ==================================================
@@ -18,35 +20,34 @@ block content
       //- ==================================================
 
       nav.user-view__menu
-
         ul.side-nav
 
           +navItem(
             '/me',
             'Settings',
             'settings',
-            activePage === 'settings'
+            activePage == 'settings'
           )
 
           +navItem(
             '/my-tours',
             'My bookings',
             'briefcase',
-            activePage === 'bookings'
+            activePage == 'bookings'
           )
 
           +navItem(
             '/account/reviews',
             'My reviews',
             'star',
-            activePage === 'reviews'
+            activePage == 'reviews'
           )
 
           +navItem(
             '/account/billing',
             'Billing',
             'credit-card',
-            activePage === 'billing'
+            activePage == 'billing'
           )
 
         //- ==================================================
@@ -54,39 +55,41 @@ block content
         //- ==================================================
 
         if user.role === 'admin'
-
           .admin-nav
-
             h5.admin-nav__heading Admin
 
             ul.side-nav
 
+              //- All Tours
               +navItem(
                 '/admin/manage-tours',
-                'Manage tours',
+                'All Tours',
                 'map',
-                activePage === 'manage-tours'
+                activePage == 'manage-tours'
               )
 
+              //- All Users
               +navItem(
                 '/admin/manage-users',
-                'Manage users',
+                'All Users',
                 'users',
-                activePage === 'manage-users'
+                activePage == 'manage-users'
               )
 
+              //- Manage Reviews
               +navItem(
                 '/admin/manage-reviews',
-                'Manage reviews',
+                'All Reviews',
                 'star',
-                activePage === 'manage-reviews'
+                activePage == 'manage-reviews'
               )
 
+              //- All Booking
               +navItem(
                 '/admin/manage-bookings',
-                'Manage bookings',
+                'All Booking',
                 'briefcase',
-                activePage === 'manage-bookings'
+                activePage == 'manage-bookings'
               )
 
       //- ==================================================
@@ -110,9 +113,11 @@ block content
             enctype='multipart/form-data'
           )
 
-            //- Name
-            .form__group
+            //- ==================================================
+            //- NAME
+            //- ==================================================
 
+            .form__group
               label.form__label(for='name')
                 | Name
 
@@ -123,9 +128,11 @@ block content
                 name='name'
               )
 
-            //- Email
-            .form__group.ma-bt-md
+            //- ==================================================
+            //- EMAIL
+            //- ==================================================
 
+            .form__group.ma-bt-md
               label.form__label(for='email')
                 | Email address
 
@@ -136,7 +143,10 @@ block content
                 name='email'
               )
 
-            //- Profile Photo
+            //- ==================================================
+            //- PROFILE PHOTO
+            //- ==================================================
+
             .form__group.form__photo-upload
 
               img#photo-preview.form__user-photo(
@@ -155,7 +165,10 @@ block content
               label(for='photo')
                 | Choose new photo
 
-            //- Save Button
+            //- ==================================================
+            //- SAVE BUTTON
+            //- ==================================================
+
             .form__group.right
 
               button.btn.btn--small.btn--green(
@@ -171,7 +184,9 @@ block content
           const photoInput = document.getElementById('photo');
           const photoPreview = document.getElementById('photo-preview');
 
-          const originalSrc = photoPreview ? photoPreview.src : '';
+          const originalSrc = photoPreview
+            ? photoPreview.src
+            : '';
 
           if (photoInput && photoPreview) {
 
@@ -179,15 +194,14 @@ block content
 
               const file = e.target.files[0];
 
-              // No file selected
+              //- No file selected
               if (!file) {
                 photoPreview.src = originalSrc;
                 return;
               }
 
-              // Validate image
+              //- Validate image
               if (!file.type.startsWith('image/')) {
-
                 alert('Please select a valid image file');
 
                 photoInput.value = '';
@@ -197,7 +211,7 @@ block content
                 return;
               }
 
-              // Revoke previous object URL
+              //- Revoke previous object URL
               if (photoPreview.dataset.objectUrl) {
 
                 URL.revokeObjectURL(
@@ -206,7 +220,7 @@ block content
 
               }
 
-              // Create preview URL
+              //- Create preview URL
               const objectUrl = URL.createObjectURL(file);
 
               photoPreview.src = objectUrl;

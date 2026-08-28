@@ -22,14 +22,14 @@ block content
           .admin-nav
             h5.admin-nav__heading Admin
             ul.side-nav
-              +navItem('/admin/manage-tours', 'Manage tours', 'map', activePage === 'manage-tours')
-              +navItem('/admin/manage-users', 'Manage users', 'users', activePage === 'manage-users')
-              +navItem('/admin/manage-reviews', 'Manage reviews', 'star', activePage === 'manage-reviews')
-              +navItem('/admin/manage-bookings', 'Manage bookings', 'briefcase', activePage === 'manage-bookings')
+              +navItem('/admin/manage-tours', 'All  tours', 'map', activePage === 'manage-tours')
+              +navItem('/admin/manage-users', 'All users', 'users', activePage === 'manage-users')
+              +navItem('/admin/manage-reviews', 'All reviews', 'star', activePage === 'manage-reviews')
+              +navItem('/admin/manage-bookings', 'All bookings', 'briefcase', activePage === 'manage-bookings')
 
       // ---------- Main Content ----------
       .user-view__content
-        h2.heading-secondary.ma-bt-md.admin-heading Manage Tours
+        h2.heading-secondary.ma-bt-md.admin-heading All Tours
         table.table
           thead
             tr

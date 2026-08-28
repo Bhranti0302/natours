@@ -2,20 +2,29 @@ const Tour = require('../models/tourModels');
 const User = require('../models/userModel');
 const Booking = require('../models/bookingModel');
 const Review = require('../models/reviewModels');
+
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 
+// ------------------------------
+// Alerts
+// ------------------------------
+
 exports.alerts = (req, res, next) => {
   const { alert } = req.query;
-  if (alert === 'booking')
+
+  if (alert === 'booking') {
     res.locals.alert =
-      "Your booking was successful! Please check your email for a confirmation. If your booking doesn't show up here immediatly, please come back later.";
+      "Your booking was successful! Please check your email for a confirmation. If your booking doesn't show up here immediately, please come back later.";
+  }
+
   next();
 };
 
 // ------------------------------
 // Overview
 // ------------------------------
+
 exports.getOverview = catchAsync(async (req, res, next) => {
   const tours = await Tour.find();
 
@@ -28,12 +37,20 @@ exports.getOverview = catchAsync(async (req, res, next) => {
 // ------------------------------
 // Single Tour
 // ------------------------------
+
 exports.getTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findOne({ slug: req.params.slug })
-    .populate({ path: 'reviews', fields: 'review rating user' })
-    .populate({ path: 'locations' });
+    .populate({
+      path: 'reviews',
+      fields: 'review rating user',
+    })
+    .populate({
+      path: 'locations',
+    });
 
-  if (!tour) return next(new AppError('There is no tour with that name.', 404));
+  if (!tour) {
+    return next(new AppError('There is no tour with that name.', 404));
+  }
 
   res.status(200).render('tour', {
     title: `${tour.name} Tour`,
@@ -45,17 +62,23 @@ exports.getTour = catchAsync(async (req, res, next) => {
 // ------------------------------
 // Auth Views
 // ------------------------------
+
 exports.getLoginForm = (req, res) => {
-  res.status(200).render('login', { title: 'Log into your account' });
+  res.status(200).render('login', {
+    title: 'Log into your account',
+  });
 };
 
 exports.getSignupForm = (req, res) => {
-  res.status(200).render('signup', { title: 'Create your account' });
+  res.status(200).render('signup', {
+    title: 'Create your account',
+  });
 };
 
 // ------------------------------
 // Account
 // ------------------------------
+
 exports.getAccount = (req, res) => {
   res.status(200).render('account', {
     title: 'Your account',
@@ -67,14 +90,22 @@ exports.getAccount = (req, res) => {
 exports.updateUserData = catchAsync(async (req, res, next) => {
   const updatedUser = await User.findByIdAndUpdate(
     req.user.id,
-    { name: req.body.name, email: req.body.email },
-    { new: true, runValidators: true }
+    {
+      name: req.body.name,
+      email: req.body.email,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
   );
 
-  if (req.xhr || req.headers.accept.indexOf('application/json') > -1) {
+  if (req.xhr || (req.headers.accept && req.headers.accept.indexOf('application/json') > -1)) {
     return res.status(200).json({
       status: 'success',
-      data: { user: updatedUser },
+      data: {
+        user: updatedUser,
+      },
     });
   }
 
@@ -94,7 +125,7 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 
   res.status(200).render('manageTours', {
     title: 'Manage Tours',
-    tours: tours.length ? tours : null, // fallback if empty
+    tours,
     activePage: 'manage-tours',
   });
 });
@@ -104,7 +135,7 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
 
   res.status(200).render('manageUsers', {
     title: 'Manage Users',
-    users: users.length ? users : null,
+    users,
     activePage: 'manage-users',
   });
 });
@@ -114,7 +145,7 @@ exports.getAllBookings = catchAsync(async (req, res, next) => {
 
   res.status(200).render('manageBooking', {
     title: 'Manage Bookings',
-    bookings: bookings.length ? bookings : null,
+    bookings,
     activePage: 'manage-bookings',
   });
 });
@@ -124,17 +155,27 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
 
   res.status(200).render('manageReviews', {
     title: 'Manage Reviews',
-    reviews: reviews.length ? reviews : null,
+    reviews,
     activePage: 'manage-reviews',
   });
 });
+
 // ------------------------------
-// My Pages
+// My Tours
 // ------------------------------
+
 exports.getMyTours = catchAsync(async (req, res, next) => {
-  const bookings = await Booking.find({ user: req.user.id });
-  const tourIDs = bookings.map((b) => b.tour); // this works because Booking.tour is an ObjectId
-  const tours = await Tour.find({ _id: { $in: tourIDs } });
+  const bookings = await Booking.find({
+    user: req.user.id,
+  });
+
+  const tourIDs = bookings.map((b) => b.tour);
+
+  const tours = await Tour.find({
+    _id: {
+      $in: tourIDs,
+    },
+  });
 
   res.status(200).render('bookings', {
     title: 'My Tours',
@@ -143,13 +184,14 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
   });
 });
 
-
+// ------------------------------
+// My Billing
+// ------------------------------
 
 exports.getMyBilling = catchAsync(async (req, res, next) => {
-  const bookings = await Booking.find({ user: req.user.id }).populate(
-    'tour',
-    'name price imageCover'
-  );
+  const bookings = await Booking.find({
+    user: req.user.id,
+  }).populate('tour', 'name price imageCover');
 
   res.status(200).render('billing', {
     title: 'My Billing',
@@ -158,8 +200,14 @@ exports.getMyBilling = catchAsync(async (req, res, next) => {
   });
 });
 
+// ------------------------------
+// My Reviews
+// ------------------------------
+
 exports.getMyReviews = catchAsync(async (req, res, next) => {
-  const reviews = await Review.find({ user: req.user.id }).populate('tour', 'name imageCover');
+  const reviews = await Review.find({
+    user: req.user.id,
+  }).populate('tour', 'name imageCover');
 
   res.status(200).render('reviews', {
     title: 'My Reviews',
