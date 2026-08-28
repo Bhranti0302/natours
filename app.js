@@ -1,6 +1,9 @@
 const path = require('path');
+
 const express = require('express');
 const morgan = require('morgan');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -17,40 +20,44 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
-const bookingController = require('./controllers/bookingController');
 const viewRouter = require('./routes/viewRoutes');
 const adminRouter = require('./routes/adminRoutes');
 
 const app = express();
+
 app.set('trust proxy', 1);
 
 // ----------------------
 // VIEW ENGINE
 // ----------------------
+
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
-
-// ======================================================
-// 🔥 STRIPE WEBHOOK (MUST BE FIRST — NO EXCEPTIONS)
-// ======================================================
-app.post(
-  '/api/v1/bookings/webhook',
-  express.raw({ type: 'application/json' }),
-  bookingController.webhookCheckout
-);
 
 // ----------------------
 // GLOBAL MIDDLEWARES
 // ----------------------
 
 // CORS
-app.use(cors());
-app.options('*', cors());
+app.use(
+  cors({
+    origin: 'http://127.0.0.1:3000',
+    credentials: true,
+  })
+);
+
+app.options(
+  '*',
+  cors({
+    origin: 'http://127.0.0.1:3000',
+    credentials: true,
+  })
+);
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Security headers (AFTER webhook)
+// Security headers
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -66,9 +73,16 @@ app.use(
         frameSrc: ["'self'", '*'],
       },
     },
+
     crossOriginEmbedderPolicy: false,
-    crossOriginOpenerPolicy: { policy: 'unsafe-none' },
-    crossOriginResourcePolicy: { policy: 'cross-origin' },
+
+    crossOriginOpenerPolicy: {
+      policy: 'unsafe-none',
+    },
+
+    crossOriginResourcePolicy: {
+      policy: 'cross-origin',
+    },
   })
 );
 
@@ -83,18 +97,35 @@ const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP, please try again in an hour!',
 });
+
 app.use('/api', limiter);
 
-// Body parsers (AFTER webhook)
+// ----------------------
+// BODY PARSERS
+// ----------------------
+
 app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: '10kb',
+  })
+);
+
 app.use(cookieParser());
 
-// Data sanitization
+// ----------------------
+// DATA SANITIZATION
+// ----------------------
+
 app.use(mongoSanitize());
 app.use(xss());
 
-// Prevent parameter pollution
+// ----------------------
+// PREVENT PARAMETER POLLUTION
+// ----------------------
+
 app.use(
   hpp({
     whitelist: [
@@ -108,32 +139,49 @@ app.use(
   })
 );
 
-// Compression
+// ----------------------
+// COMPRESSION
+// ----------------------
+
 app.use(compression());
 
-// Test middleware
+// ----------------------
+// CUSTOM MIDDLEWARE
+// ----------------------
+
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
 
 // ----------------------
+// SWAGGER DOCUMENTATION
+// ----------------------
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// ----------------------
 // ROUTES
 // ----------------------
+
 app.use('/', viewRouter);
+
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/bookings', bookingRouter);
+
 app.use('/admin', adminRouter);
 
 // ----------------------
 // ERROR HANDLING
 // ----------------------
+
 app.all('*', (req, res, next) => {
   if (req.originalUrl === '/.well-known/appspecific/com.chrome.devtools.json') {
     return res.status(204).send();
   }
+
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
