@@ -21,6 +21,12 @@ process.on('uncaughtException', (err) => {
 
 const DB = process.env.DATABASE;
 
+// Safe debugging - DO NOT print the full DATABASE value
+console.log('DATABASE exists:', !!DB);
+console.log('DATABASE length:', DB ? DB.length : 0);
+console.log('DATABASE starts:', DB ? DB.substring(0, 30) : 'missing');
+console.log('DATABASE ends:', DB ? DB.substring(DB.length - 20) : 'missing');
+
 if (!DB) {
   console.error('❌ DATABASE environment variable is missing');
   process.exit(1);
