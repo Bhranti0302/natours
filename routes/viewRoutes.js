@@ -1,7 +1,7 @@
 const express = require('express');
-const viewsController = require('../controllers/viewsController'); // ✅ keep plural
+
+const viewsController = require('../controllers/viewsController');
 const authController = require('../controllers/authController');
-const bookingController = require('../controllers/bookingController');
 
 const Tour = require('../models/tourModels');
 const Review = require('../models/reviewModels');
@@ -9,48 +9,54 @@ const catchAsync = require('../utils/catchAsync');
 
 const router = express.Router();
 
+////////////////////////////////////////////////////////////
+// ALERTS MIDDLEWARE
+////////////////////////////////////////////////////////////
+
 router.use(viewsController.alerts);
 
-// ------------------------------
-// Routes
-// ------------------------------
+////////////////////////////////////////////////////////////
+// HOMEPAGE
+////////////////////////////////////////////////////////////
 
-// Homepage (overview)
-router.get(
-  '/',
-  bookingController.createBookingCheckout, // TEMP booking creation
-  authController.isLoggedIn, // navbar login logic
-  viewsController.getOverview
-);
+router.get('/', authController.isLoggedIn, viewsController.getOverview);
 
-// Tour details
+////////////////////////////////////////////////////////////
+// TOUR DETAILS
+////////////////////////////////////////////////////////////
+
 router.get('/tour/:slug', authController.isLoggedIn, viewsController.getTour);
 
-// ------------------------------
-// Auth pages
-// ------------------------------
+////////////////////////////////////////////////////////////
+// AUTH PAGES
+////////////////////////////////////////////////////////////
+
 router.get('/login', authController.isLoggedIn, viewsController.getLoginForm);
+
 router.get('/signup', viewsController.getSignupForm);
 
-// ------------------------------
-// User account pages
-// ------------------------------
+////////////////////////////////////////////////////////////
+// USER ACCOUNT PAGES
+////////////////////////////////////////////////////////////
+
 router.get('/me', authController.protect, viewsController.getAccount);
+
 router.post('/submit-user-data', authController.protect, viewsController.updateUserData);
 
 router.get('/account/billing', authController.protect, viewsController.getMyBilling);
+
 router.get('/account/reviews', authController.protect, viewsController.getMyReviews);
 
-router.get(
-  '/my-tours',
-  authController.protect,
-  bookingController.createBookingCheckout,
-  viewsController.getMyTours // ✅ fixed name
-);
+////////////////////////////////////////////////////////////
+// MY TOURS
+////////////////////////////////////////////////////////////
 
-// ------------------------------
-// Handle review form submission
-// ------------------------------
+router.get('/my-tours', authController.protect, viewsController.getMyTours);
+
+////////////////////////////////////////////////////////////
+// CREATE REVIEW
+////////////////////////////////////////////////////////////
+
 router.post(
   '/tour/:tourId/reviews',
   authController.protect,
@@ -63,6 +69,7 @@ router.post(
     });
 
     const tour = await Tour.findById(req.params.tourId);
+
     res.redirect(`/tour/${tour.slug}`);
   })
 );
