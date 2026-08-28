@@ -8,126 +8,211 @@ mixin navItem(link, text, icon, active)
       | #{text}
 
 block content
+
   main.main
+
     .user-view
+
+      //- ==================================================
+      //- SIDEBAR
+      //- ==================================================
+
       nav.user-view__menu
+
         ul.side-nav
-          +navItem('/me', 'Settings', 'settings', activePage === 'settings')
-          +navItem('/my-tours', 'My bookings', 'briefcase', activePage === 'bookings')
-          +navItem('/account/reviews', 'My reviews', 'star', activePage === 'reviews')
-          +navItem('/account/billing', 'Billing', 'credit-card', activePage === 'billing')
+
+          +navItem(
+            '/me',
+            'Settings',
+            'settings',
+            activePage === 'settings'
+          )
+
+          +navItem(
+            '/my-tours',
+            'My bookings',
+            'briefcase',
+            activePage === 'bookings'
+          )
+
+          +navItem(
+            '/account/reviews',
+            'My reviews',
+            'star',
+            activePage === 'reviews'
+          )
+
+          +navItem(
+            '/account/billing',
+            'Billing',
+            'credit-card',
+            activePage === 'billing'
+          )
+
+        //- ==================================================
+        //- ADMIN NAVIGATION
+        //- ==================================================
 
         if user.role === 'admin'
+
           .admin-nav
+
             h5.admin-nav__heading Admin
+
             ul.side-nav
-              +navItem('/admin/manage-tours', 'Manage tours', 'map', activePage === 'manage-tours')
-              +navItem('/admin/manage-users', 'Manage users', 'users', activePage === 'manage-users')
-              +navItem('/admin/manage-reviews', 'Manage reviews', 'star', activePage === 'manage-reviews')
-              +navItem('/admin/manage-bookings', 'Manage bookings', 'briefcase', activePage === 'manage-bookings')
+
+              +navItem(
+                '/admin/manage-tours',
+                'Manage tours',
+                'map',
+                activePage === 'manage-tours'
+              )
+
+              +navItem(
+                '/admin/manage-users',
+                'Manage users',
+                'users',
+                activePage === 'manage-users'
+              )
+
+              +navItem(
+                '/admin/manage-reviews',
+                'Manage reviews',
+                'star',
+                activePage === 'manage-reviews'
+              )
+
+              +navItem(
+                '/admin/manage-bookings',
+                'Manage bookings',
+                'briefcase',
+                activePage === 'manage-bookings'
+              )
+
+      //- ==================================================
+      //- ACCOUNT CONTENT
+      //- ==================================================
 
       .user-view__content
-        //- Account settings form
+
+        //- ==================================================
+        //- ACCOUNT SETTINGS
+        //- ==================================================
+
         .user-view__form-container
-          h2.heading-secondary.ma-bt-md Your account settings
+
+          h2.heading-secondary.ma-bt-md
+            | Your account settings
 
           form.form.form-user-data(
             method='POST',
             action='/api/v1/users/updateMe',
             enctype='multipart/form-data'
           )
+
+            //- Name
             .form__group
-              label.form__label(for='name') Name
-              input#name.form__input(type='text', value=user.name, required, name='name')
 
+              label.form__label(for='name')
+                | Name
+
+              input#name.form__input(
+                type='text',
+                value=user.name,
+                required,
+                name='name'
+              )
+
+            //- Email
             .form__group.ma-bt-md
-              label.form__label(for='email') Email address
-              input#email.form__input(type='email', value=user.email, required, name='email')
 
+              label.form__label(for='email')
+                | Email address
+
+              input#email.form__input(
+                type='email',
+                value=user.email,
+                required,
+                name='email'
+              )
+
+            //- Profile Photo
             .form__group.form__photo-upload
+
               img#photo-preview.form__user-photo(
                 src=user.photo && user.photo.startsWith('http')
                   ? user.photo
-                  : `/img/users/${user.photo || 'default.jpg'}`
+                  : `/img/users/${user.photo || 'default.jpg'}`,
                 alt='User photo'
               )
-              input#photo.form__upload(type='file', name='photo', accept='image/*')
-              label(for='photo') Choose new photo
 
+              input#photo.form__upload(
+                type='file',
+                name='photo',
+                accept='image/*'
+              )
+
+              label(for='photo')
+                | Choose new photo
+
+            //- Save Button
             .form__group.right
-              button.btn.btn--small.btn--green(type='submit') Save settings
 
-        .line &nbsp;
-
-        //- Password update form
-        .user-view__form-container
-          h2.heading-secondary.ma-bt-md Password change
-
-          form.form.form-user-password(
-            method='POST',
-            action='/api/v1/users/updateMyPassword'
-          )
-            .form__group
-              label.form__label(for='password-current') Current password
-              input#password-current.form__input(
-                type='password'
-                placeholder='••••••••'
-                required
-                minlength='8'
-                name='passwordCurrent'
+              button.btn.btn--small.btn--green(
+                type='submit'
               )
+                | Save settings
 
-            .form__group
-              label.form__label(for='password') New password
-              input#password.form__input(
-                type='password'
-                placeholder='••••••••'
-                required
-                minlength='8'
-                name='password'
-              )
+        //- ==================================================
+        //- IMAGE PREVIEW SCRIPT
+        //- ==================================================
 
-            .form__group.ma-bt-lg
-              label.form__label(for='password-confirm') Confirm password
-              input#password-confirm.form__input(
-                type='password'
-                placeholder='••••••••'
-                required
-                minlength='8'
-                name='passwordConfirm'
-              )
-
-            .form__group.right
-              button.btn.btn--small.btn--green.btn--save-password(type='submit') Save password
-
-        //- Image preview script
         script.
           const photoInput = document.getElementById('photo');
           const photoPreview = document.getElementById('photo-preview');
-          const originalSrc = photoPreview.src; // store Cloudinary image
+
+          const originalSrc = photoPreview ? photoPreview.src : '';
 
           if (photoInput && photoPreview) {
+
             photoInput.addEventListener('change', (e) => {
+
               const file = e.target.files[0];
+
+              // No file selected
               if (!file) {
-                photoPreview.src = originalSrc; // revert if no file selected
+                photoPreview.src = originalSrc;
                 return;
               }
 
+              // Validate image
               if (!file.type.startsWith('image/')) {
+
                 alert('Please select a valid image file');
+
                 photoInput.value = '';
+
                 photoPreview.src = originalSrc;
+
                 return;
               }
 
               // Revoke previous object URL
               if (photoPreview.dataset.objectUrl) {
-                URL.revokeObjectURL(photoPreview.dataset.objectUrl);
+
+                URL.revokeObjectURL(
+                  photoPreview.dataset.objectUrl
+                );
+
               }
 
+              // Create preview URL
               const objectUrl = URL.createObjectURL(file);
-              photoPreview.src = objectUrl;          // preview local file
+
+              photoPreview.src = objectUrl;
+
               photoPreview.dataset.objectUrl = objectUrl;
+
             });
+
           }
