@@ -1,7 +1,6 @@
 // Example imports (adjust based on your project)
 import { showAlert } from './alert.js';
 import './map';
-import './stripe';
 import './alert';
 import './login';
 import './review';
