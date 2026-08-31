@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-const validator = require('validator');
-const Review = require('./reviewModels');
 
 // -----------------------------
 // Define the Tour Schema
