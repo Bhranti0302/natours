@@ -12,6 +12,7 @@ const app = require('./app');
 process.on('uncaughtException', (err) => {
   console.error('UNCAUGHT EXCEPTION 💥 Shutting down...');
   console.error(err.name, err.message);
+
   process.exit(1);
 });
 
@@ -21,22 +22,29 @@ process.on('uncaughtException', (err) => {
 
 const DB = process.env.DATABASE;
 
-// Safe debugging - DO NOT print the full DATABASE value
+// Safe debugging
+// DO NOT print the full DATABASE value
+
 console.log('DATABASE exists:', !!DB);
 console.log('DATABASE length:', DB ? DB.length : 0);
-console.log('DATABASE starts:', DB ? DB.substring(0, 30) : 'missing');
-console.log('DATABASE ends:', DB ? DB.substring(DB.length - 20) : 'missing');
 
-console.log('Contains backslash:', DB ? DB.includes('\\') : false);
+if (DB) {
+  console.log('DATABASE starts:', DB.substring(0, 30));
 
-console.log('Contains quote:', DB ? DB.includes('"') : false);
+  console.log('DATABASE ends:', DB.substring(DB.length - 20));
 
-console.log('Contains space:', DB ? DB.includes(' ') : false);
+  console.log('Contains backslash:', DB.includes('\\'));
 
-console.log('Contains newline:', DB ? DB.includes('\n') : false);
+  console.log('Contains quote:', DB.includes('"') || DB.includes("'"));
+
+  console.log('Contains space:', DB.includes(' '));
+
+  console.log('Contains newline:', DB.includes('\n') || DB.includes('\r'));
+}
 
 if (!DB) {
   console.error('❌ DATABASE environment variable is missing');
+
   process.exit(1);
 }
 
@@ -45,10 +53,7 @@ if (!DB) {
 // -----------------------------
 
 mongoose
-  .connect(DB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(DB)
   .then(() => {
     console.log('✅ DB connection successful');
 
@@ -68,6 +73,7 @@ mongoose
 
     process.on('unhandledRejection', (err) => {
       console.error('UNHANDLED REJECTION 💥 Shutting down...');
+
       console.error(err.name, err.message);
 
       server.close(() => {
@@ -89,5 +95,6 @@ mongoose
   })
   .catch((err) => {
     console.error('❌ DB connection error:', err.message);
+
     process.exit(1);
   });
