@@ -1,10 +1,13 @@
 const express = require('express');
 
 const bookingController = require('../controllers/bookingController');
-
 const authController = require('../controllers/authController');
 
 const router = express.Router();
+
+// ==========================================================
+// SWAGGER
+// ==========================================================
 
 /**
  * @swagger
@@ -13,6 +16,16 @@ const router = express.Router();
  *   description: Booking management APIs
  */
 
+// ==========================================================
+// PROTECT ALL BOOKING ROUTES
+// ==========================================================
+
+router.use(authController.protect);
+
+// ==========================================================
+// CREATE BOOKING
+// ==========================================================
+
 /**
  * @swagger
  * /api/v1/bookings/tour/{tourId}:
@@ -20,7 +33,7 @@ const router = express.Router();
  *     summary: Create a booking for a tour
  *     tags: [Bookings]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: tourId
@@ -31,17 +44,19 @@ const router = express.Router();
  *     responses:
  *       201:
  *         description: Booking created successfully
+ *       400:
+ *         description: User already booked this tour
  *       401:
  *         description: User is not authenticated
  *       404:
  *         description: Tour not found
  */
 
-// Protect all booking routes
-router.use(authController.protect);
-
-// Create booking
 router.post('/tour/:tourId', bookingController.createBooking);
+
+// ==========================================================
+// GET ALL BOOKINGS
+// ==========================================================
 
 /**
  * @swagger
@@ -50,7 +65,7 @@ router.post('/tour/:tourId', bookingController.createBooking);
  *     summary: Get all bookings
  *     tags: [Bookings]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     responses:
  *       200:
  *         description: Bookings fetched successfully
@@ -58,8 +73,11 @@ router.post('/tour/:tourId', bookingController.createBooking);
  *         description: User is not authenticated
  */
 
-// Get all bookings
 router.get('/', bookingController.getAllBookings);
+
+// ==========================================================
+// GET / UPDATE / DELETE ONE BOOKING
+// ==========================================================
 
 /**
  * @swagger
@@ -68,7 +86,7 @@ router.get('/', bookingController.getAllBookings);
  *     summary: Get a booking by ID
  *     tags: [Bookings]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -85,7 +103,7 @@ router.get('/', bookingController.getAllBookings);
  *     summary: Update a booking
  *     tags: [Bookings]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -100,7 +118,7 @@ router.get('/', bookingController.getAllBookings);
  *     summary: Delete a booking
  *     tags: [Bookings]
  *     security:
- *       - bearerAuth: []
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -112,7 +130,6 @@ router.get('/', bookingController.getAllBookings);
  *         description: Booking deleted successfully
  */
 
-// Get, update, delete one booking
 router
   .route('/:id')
   .get(bookingController.getBooking)
