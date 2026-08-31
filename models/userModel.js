@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
@@ -68,10 +67,10 @@ const userSchema = new mongoose.Schema({
 // Hash Password Before Saving
 // -----------------------------
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function () {
   // Only hash password if it was modified
   if (!this.isModified('password')) {
-    return next();
+    return;
   }
 
   // Hash password
@@ -79,22 +78,19 @@ userSchema.pre('save', async function (next) {
 
   // Remove passwordConfirm
   this.passwordConfirm = undefined;
-
-  next();
 });
 
 // -----------------------------
 // Update passwordChangedAt
 // -----------------------------
 
-userSchema.pre('save', function (next) {
+userSchema.pre('save', function () {
+  // Don't update when creating a new user
   if (!this.isModified('password') || this.isNew) {
-    return next();
+    return;
   }
 
   this.passwordChangedAt = Date.now() - 1000;
-
-  next();
 });
 
 // -----------------------------
@@ -123,14 +119,12 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 // Exclude Inactive Users
 // -----------------------------
 
-userSchema.pre('find', function (next) {
+userSchema.pre('find', function () {
   this.find({
     active: {
       $ne: false,
     },
   });
-
-  next();
 });
 
 // -----------------------------
