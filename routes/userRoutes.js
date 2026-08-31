@@ -3,29 +3,7 @@ const express = require('express');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 
-const { signupValidation, loginValidation } = require('../validators/authValidator');
-
-const { validationResult } = require('express-validator');
-
 const router = express.Router();
-
-////////////////////////////////////////////////////////////
-// VALIDATION ERROR HANDLER
-////////////////////////////////////////////////////////////
-
-const validate = (req, res, next) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Validation failed',
-      errors: errors.array(),
-    });
-  }
-
-  next();
-};
 
 ////////////////////////////////////////////////////////////
 // SWAGGER SCHEMAS
@@ -118,18 +96,11 @@ const validate = (req, res, next) => {
  *     responses:
  *       201:
  *         description: User created successfully
- *       400:
- *         description: Validation failed
  *       500:
  *         description: Server error
  */
-router.post(
-  '/signup',
-  signupValidation,
-  validate,
-  userController.uploadUserPhoto,
-  authController.signup
-);
+
+router.post('/signup', userController.uploadUserPhoto, authController.signup);
 
 /**
  * @swagger
@@ -147,12 +118,11 @@ router.post(
  *     responses:
  *       200:
  *         description: Login successful
- *       400:
- *         description: Validation failed
  *       401:
  *         description: Incorrect email or password
  */
-router.post('/login', loginValidation, validate, authController.login);
+
+router.post('/login', authController.login);
 
 /**
  * @swagger
@@ -165,6 +135,7 @@ router.post('/login', loginValidation, validate, authController.login);
  *       200:
  *         description: Logout successful
  */
+
 router.get('/logout', authController.logout);
 
 ////////////////////////////////////////////////////////////
@@ -186,6 +157,7 @@ router.get('/logout', authController.logout);
  *       401:
  *         description: Not authenticated
  */
+
 router.get('/me', authController.protect, userController.getMe, userController.getUser);
 
 /**
@@ -217,6 +189,7 @@ router.get('/me', authController.protect, userController.getMe, userController.g
  *       401:
  *         description: Not authenticated
  */
+
 router.patch('/updateMe', userController.uploadUserPhoto, userController.updateMe);
 
 /**
@@ -234,10 +207,11 @@ router.patch('/updateMe', userController.uploadUserPhoto, userController.updateM
  *       401:
  *         description: Not authenticated
  */
+
 router.delete('/deleteMe', userController.deleteMe);
 
 ////////////////////////////////////////////////////////////
-// ADMIN-ONLY ROUTES
+// ADMIN-ONLY / GENERAL USER ROUTES
 ////////////////////////////////////////////////////////////
 
 /**
@@ -257,6 +231,7 @@ router.delete('/deleteMe', userController.deleteMe);
  *       403:
  *         description: Admin access required
  */
+
 router.route('/').get(userController.getAllUsers).post(userController.createUser);
 
 /**
@@ -274,7 +249,7 @@ router.route('/').get(userController.getAllUsers).post(userController.createUser
  *         required: true
  *         schema:
  *           type: string
- *         example: 5c8a1d5b0190b214360dc057
+ *           example: 5c8a1d5b0190b214360dc057
  *     responses:
  *       200:
  *         description: User found
@@ -293,7 +268,7 @@ router.route('/').get(userController.getAllUsers).post(userController.createUser
  *         required: true
  *         schema:
  *           type: string
- *         example: 5c8a1d5b0190b214360dc057
+ *           example: 5c8a1d5b0190b214360dc057
  *     requestBody:
  *       required: true
  *       content:
@@ -330,13 +305,14 @@ router.route('/').get(userController.getAllUsers).post(userController.createUser
  *         required: true
  *         schema:
  *           type: string
- *         example: 5c8a1d5b0190b214360dc057
+ *           example: 5c8a1d5b0190b214360dc057
  *     responses:
  *       204:
  *         description: User deleted successfully
  *       404:
  *         description: User not found
  */
+
 router
   .route('/:id')
   .get(userController.getUser)

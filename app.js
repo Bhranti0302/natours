@@ -1,14 +1,10 @@
 const path = require('path');
-
 const express = require('express');
 const morgan = require('morgan');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
-const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const cors = require('cors');
@@ -116,30 +112,6 @@ app.use(
 app.use(cookieParser());
 
 // ----------------------
-// DATA SANITIZATION
-// ----------------------
-
-app.use(mongoSanitize());
-app.use(xss());
-
-// ----------------------
-// PREVENT PARAMETER POLLUTION
-// ----------------------
-
-app.use(
-  hpp({
-    whitelist: [
-      'duration',
-      'ratingsQuantity',
-      'ratingsAverage',
-      'maxGroupSize',
-      'difficulty',
-      'price',
-    ],
-  })
-);
-
-// ----------------------
 // COMPRESSION
 // ----------------------
 
@@ -167,8 +139,11 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/', viewRouter);
 
 app.use('/api/v1/tours', tourRouter);
+
 app.use('/api/v1/users', userRouter);
+
 app.use('/api/v1/reviews', reviewRouter);
+
 app.use('/api/v1/bookings', bookingRouter);
 
 app.use('/admin', adminRouter);
