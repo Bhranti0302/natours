@@ -7,22 +7,26 @@ const bookingSchema = new mongoose.Schema(
       ref: 'Tour',
       required: [true, 'Booking must belong to a Tour!'],
     },
+
     user: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
       required: [true, 'Booking must belong to a User!'],
     },
+
     price: {
       type: Number,
       required: [true, 'Booking must have a price!'],
     },
+
     createdAt: {
       type: Date,
       default: Date.now,
     },
+
     paid: {
       type: Boolean,
-      default: true, // you can set false initially and update after Stripe payment
+      default: true,
     },
   },
   {
@@ -31,13 +35,15 @@ const bookingSchema = new mongoose.Schema(
   }
 );
 
-// Populate tour & user automatically
-bookingSchema.pre(/^find/, function (next) {
+// ==========================================================
+// POPULATE USER AND TOUR AUTOMATICALLY
+// ==========================================================
+
+bookingSchema.pre(/^find/, function () {
   this.populate('user').populate({
     path: 'tour',
     select: 'name',
   });
-  next();
 });
 
 const Booking = mongoose.model('Booking', bookingSchema);
