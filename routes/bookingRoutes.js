@@ -113,6 +113,8 @@ router.get('/', bookingController.getAllBookings);
  *     responses:
  *       200:
  *         description: Booking updated successfully
+ *       404:
+ *         description: Booking not found
  *
  *   delete:
  *     summary: Delete a booking
@@ -128,6 +130,8 @@ router.get('/', bookingController.getAllBookings);
  *     responses:
  *       204:
  *         description: Booking deleted successfully
+ *       404:
+ *         description: Booking not found
  */
 
 router
@@ -135,5 +139,9 @@ router
   .get(bookingController.getBooking)
   .patch(bookingController.updateBooking)
   .delete(bookingController.deleteBooking);
+
+// ==========================================================
+// EXPORT ROUTER
+// ==========================================================
 
 module.exports = router;

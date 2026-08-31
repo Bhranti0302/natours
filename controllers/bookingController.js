@@ -9,11 +9,26 @@ const factory = require('./handlerFactory');
 // ==========================================================
 
 exports.createBooking = catchAsync(async (req, res, next) => {
+  // --------------------------------------------------------
   // Get tour ID from URL
-  const tourId = req.params.tourId;
+  // --------------------------------------------------------
 
-  // Get logged-in user
-  const userId = req.user._id;
+  const { tourId } = req.params;
+
+  // --------------------------------------------------------
+  // Check logged-in user
+  // --------------------------------------------------------
+
+  if (!req.user) {
+    return next(new AppError('You must be logged in to book a tour', 401));
+  }
+
+  // Your protect middleware should attach the user to req.user
+  const userId = req.user._id || req.user.id;
+
+  if (!userId) {
+    return next(new AppError('User information is missing', 401));
+  }
 
   // --------------------------------------------------------
   // Check if tour exists
@@ -26,7 +41,7 @@ exports.createBooking = catchAsync(async (req, res, next) => {
   }
 
   // --------------------------------------------------------
-  // Check duplicate booking
+  // Check if user already booked this tour
   // --------------------------------------------------------
 
   const existingBooking = await Booking.findOne({
@@ -39,7 +54,7 @@ exports.createBooking = catchAsync(async (req, res, next) => {
   }
 
   // --------------------------------------------------------
-  // Create booking
+  // Create booking directly
   // --------------------------------------------------------
 
   const booking = await Booking.create({
@@ -49,7 +64,7 @@ exports.createBooking = catchAsync(async (req, res, next) => {
   });
 
   // --------------------------------------------------------
-  // Response
+  // Send response
   // --------------------------------------------------------
 
   res.status(201).json({
