@@ -7,7 +7,7 @@ Users can explore tours, book them, leave reviews, and manage their account.
 
 ## 🚀 Live Demo
 
-👉 [Click here to view the live demo](https://natours-zyht.onrender.com)
+👉 [Click here to view the live demo](https://natours-zyht.onrender.com/)
 
 
 ---
