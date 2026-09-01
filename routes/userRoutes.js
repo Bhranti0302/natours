@@ -90,7 +90,7 @@ const router = express.Router();
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             $ref: '#/components/schemas/UserSignup'
  *     responses:
@@ -172,7 +172,7 @@ router.get('/me', authController.protect, userController.getMe, userController.g
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -183,6 +183,9 @@ router.get('/me', authController.protect, userController.getMe, userController.g
  *                 type: string
  *                 format: email
  *                 example: bhranti@example.com
+ *               photo:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
  *         description: User updated successfully
@@ -190,7 +193,12 @@ router.get('/me', authController.protect, userController.getMe, userController.g
  *         description: Not authenticated
  */
 
-router.patch('/updateMe', userController.uploadUserPhoto, userController.updateMe);
+router.patch(
+  '/updateMe',
+  authController.protect,
+  userController.uploadUserPhoto,
+  userController.updateMe
+);
 
 /**
  * @swagger
@@ -208,10 +216,10 @@ router.patch('/updateMe', userController.uploadUserPhoto, userController.updateM
  *         description: Not authenticated
  */
 
-router.delete('/deleteMe', userController.deleteMe);
+router.delete('/deleteMe', authController.protect, userController.deleteMe);
 
 ////////////////////////////////////////////////////////////
-// ADMIN-ONLY / GENERAL USER ROUTES
+// ADMIN / GENERAL USER ROUTES
 ////////////////////////////////////////////////////////////
 
 /**
@@ -228,8 +236,6 @@ router.delete('/deleteMe', userController.deleteMe);
  *         description: List of all users
  *       401:
  *         description: Not authenticated
- *       403:
- *         description: Admin access required
  */
 
 router.route('/').get(userController.getAllUsers).post(userController.createUser);
@@ -249,7 +255,7 @@ router.route('/').get(userController.getAllUsers).post(userController.createUser
  *         required: true
  *         schema:
  *           type: string
- *           example: 5c8a1d5b0190b214360dc057
+ *         example: 5c8a1d5b0190b214360dc057
  *     responses:
  *       200:
  *         description: User found
@@ -268,25 +274,7 @@ router.route('/').get(userController.getAllUsers).post(userController.createUser
  *         required: true
  *         schema:
  *           type: string
- *           example: 5c8a1d5b0190b214360dc057
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *                 format: email
- *               role:
- *                 type: string
- *                 enum:
- *                   - user
- *                   - admin
- *                   - lead-guide
+ *         example: 5c8a1d5b0190b214360dc057
  *     responses:
  *       200:
  *         description: User updated successfully
@@ -305,7 +293,7 @@ router.route('/').get(userController.getAllUsers).post(userController.createUser
  *         required: true
  *         schema:
  *           type: string
- *           example: 5c8a1d5b0190b214360dc057
+ *         example: 5c8a1d5b0190b214360dc057
  *     responses:
  *       204:
  *         description: User deleted successfully
@@ -318,5 +306,9 @@ router
   .get(userController.getUser)
   .patch(userController.updateUser)
   .delete(userController.deleteUser);
+
+////////////////////////////////////////////////////////////
+// EXPORT ROUTER
+////////////////////////////////////////////////////////////
 
 module.exports = router;
