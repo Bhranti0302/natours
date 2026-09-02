@@ -12,8 +12,8 @@ const options = {
 
     servers: [
       {
-        url: 'http://localhost:3000',
-        description: 'Local server',
+        url: 'https://natours-zyht.onrender.com',
+        description: 'Production server',
       },
     ],
 
