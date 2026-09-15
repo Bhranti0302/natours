@@ -45,38 +45,12 @@ const router = express.Router();
  *           example: A beautiful coastal adventure
  */
 
-/**
- * @swagger
- * /api/v1/tours/top-5-cheap:
- *   get:
- *     summary: Get top 5 cheapest tours
- *     tags: [Tours]
- *     responses:
- *       200:
- *         description: Top 5 tours fetched successfully
- */
-
 // Nested reviews route
 router.use('/:tourId/reviews', reviewRouter);
 
 router.route('/top-5-cheap').get(tourControllers.aliasTopTours, tourControllers.getAllTours);
 
-/**
- * @swagger
- * /api/v1/tours/tour-stats:
- *   get:
- *     summary: Get tour statistics
- *     tags: [Tours]
- *     security:
- *       - cookieAuth: []
- *     responses:
- *       200:
- *         description: Tour statistics fetched successfully
- *       401:
- *         description: User not authenticated
- *       403:
- *         description: Not authorized
- */
+
 
 router
   .route('/tour-stats')
@@ -86,25 +60,7 @@ router
     tourControllers.getTourStats
   );
 
-/**
- * @swagger
- * /api/v1/tours/monthly-plan/{year}:
- *   get:
- *     summary: Get monthly tour plan for a specific year
- *     tags: [Tours]
- *     security:
- *       - cookieAuth: []
- *     parameters:
- *       - in: path
- *         name: year
- *         required: true
- *         schema:
- *           type: integer
- *         example: 2026
- *     responses:
- *       200:
- *         description: Monthly plan fetched successfully
- */
+
 
 router
   .route('/monthly-plan/:year')
@@ -114,64 +70,11 @@ router
     tourControllers.getMonthlyPlan
   );
 
-/**
- * @swagger
- * /api/v1/tours/tours-within/{distance}/center/{latlng}/unit/{unit}:
- *   get:
- *     summary: Get tours within a specific distance
- *     tags: [Tours]
- *     parameters:
- *       - in: path
- *         name: distance
- *         required: true
- *         schema:
- *           type: number
- *         example: 233
- *       - in: path
- *         name: latlng
- *         required: true
- *         schema:
- *           type: string
- *         example: -40,45
- *       - in: path
- *         name: unit
- *         required: true
- *         schema:
- *           type: string
- *           enum: [mi, km]
- *         example: mi
- *     responses:
- *       200:
- *         description: Nearby tours fetched successfully
- */
-
 router
   .route('/tours-within/:distance/center/:latlng/unit/:unit')
   .get(tourControllers.getToursWithin);
 
-/**
- * @swagger
- * /api/v1/tours/distances/{latlng}/unit/{unit}:
- *   get:
- *     summary: Get distances of tours from a location
- *     tags: [Tours]
- *     parameters:
- *       - in: path
- *         name: latlng
- *         required: true
- *         schema:
- *           type: string
- *         example: -40,45
- *       - in: path
- *         name: unit
- *         required: true
- *         schema:
- *           type: string
- *           enum: [mi, km]
- *     responses:
- *       200:
- *         description: Distances fetched successfully
- */
+
 
 router.route('/distances/:latlng/unit/:unit').get(tourControllers.getDistances);
 
