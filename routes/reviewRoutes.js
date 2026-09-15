@@ -67,62 +67,7 @@ router
   .get(reviewController.getAllReviews)
   .post(authController.restrictTo('user'), reviewController.createReview);
 
-/**
- * @swagger
- * /api/v1/reviews/{id}:
- *   patch:
- *     summary: Update a review
- *     tags: [Reviews]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Review ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               review:
- *                 type: string
- *                 example: Updated review text
- *               rating:
- *                 type: number
- *                 example: 4
- *     responses:
- *       200:
- *         description: Review updated successfully
- *       403:
- *         description: Not authorized
- *       404:
- *         description: Review not found
- *
- *   delete:
- *     summary: Delete a review
- *     tags: [Reviews]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Review ID
- *     responses:
- *       204:
- *         description: Review deleted successfully
- *       403:
- *         description: Not authorized
- *       404:
- *         description: Review not found
- */
+
 
 // Update and delete review
 router
