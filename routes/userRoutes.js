@@ -240,66 +240,7 @@ router.delete('/deleteMe', authController.protect, userController.deleteMe);
 
 router.route('/').get(userController.getAllUsers).post(userController.createUser);
 
-/**
- * @swagger
- * /api/v1/users/{id}:
- *   get:
- *     summary: Get user by ID
- *     tags:
- *       - Admin - Users
- *     security:
- *       - cookieAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         example: 5c8a1d5b0190b214360dc057
- *     responses:
- *       200:
- *         description: User found
- *       404:
- *         description: User not found
- *
- *   patch:
- *     summary: Update user by ID
- *     tags:
- *       - Admin - Users
- *     security:
- *       - cookieAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         example: 5c8a1d5b0190b214360dc057
- *     responses:
- *       200:
- *         description: User updated successfully
- *       404:
- *         description: User not found
- *
- *   delete:
- *     summary: Delete user by ID
- *     tags:
- *       - Admin - Users
- *     security:
- *       - cookieAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         example: 5c8a1d5b0190b214360dc057
- *     responses:
- *       204:
- *         description: User deleted successfully
- *       404:
- *         description: User not found
- */
+
 
 router
   .route('/:id')
