@@ -75,64 +75,6 @@ router.post('/tour/:tourId', bookingController.createBooking);
 
 router.get('/', bookingController.getAllBookings);
 
-// ==========================================================
-// GET / UPDATE / DELETE ONE BOOKING
-// ==========================================================
-
-/**
- * @swagger
- * /api/v1/bookings/{id}:
- *   get:
- *     summary: Get a booking by ID
- *     tags: [Bookings]
- *     security:
- *       - cookieAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Booking fetched successfully
- *       404:
- *         description: Booking not found
- *
- *   patch:
- *     summary: Update a booking
- *     tags: [Bookings]
- *     security:
- *       - cookieAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Booking updated successfully
- *       404:
- *         description: Booking not found
- *
- *   delete:
- *     summary: Delete a booking
- *     tags: [Bookings]
- *     security:
- *       - cookieAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       204:
- *         description: Booking deleted successfully
- *       404:
- *         description: Booking not found
- */
 
 router
   .route('/:id')
